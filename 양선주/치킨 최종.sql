@@ -7,8 +7,8 @@ DROP TABLE "REPLY_REPORT";
 DROP TABLE "REPLY_LIKE";
 DROP TABLE "POST_LIKE";
 DROP TABLE "MEMBER_REPORT";
-DROP TABLE "STORE";            -- �־ȵ鰨?
-DROP TABLE "NOTICEBOARD_POST"; --�� �ȵ�
+DROP TABLE "STORE";            -- 왜안들감?
+DROP TABLE "NOTICEBOARD_POST"; --길어서 안들어감
 DROP TABLE "FILE";
 DROP TABLE "MEMBER";
 DROP TABLE "MENU";
@@ -23,8 +23,8 @@ DROP TABLE "REPLY_REPORT";
 DROP TABLE "REPLY_LIKE";
 DROP TABLE "POST_LIKE";
 DROP TABLE "MEMBER_REPORT";
-DROP TABLE "STORE";            -- �־ȵ鰨?
-DROP TABLE "NOTICEBOARD_POST"; --�� �ȵ�
+DROP TABLE "STORE";            -- 왜안들감?
+DROP TABLE "NOTICEBOARD_POST"; --길어서 안들어감
 DROP TABLE "FILE";
 DROP TABLE "MEMBER";
 DROP TABLE "MENU";
@@ -39,8 +39,8 @@ DROP TABLE "REPLY_REPORT";
 DROP TABLE "REPLY_LIKE";
 DROP TABLE "POST_LIKE";
 DROP TABLE "MEMBER_REPORT";
-DROP TABLE "STORE";            -- �־ȵ鰨?
-DROP TABLE "NOTICEBOARD_POST"; --�� �ȵ�
+DROP TABLE "STORE";            -- 왜안들감?
+DROP TABLE "NOTICEBOARD_POST"; --길어서 안들어감
 DROP TABLE "FILE";
 DROP TABLE "MEMBER";
 DROP TABLE "MENU";
@@ -66,24 +66,82 @@ CREATE TABLE "MEMBER" (
 	"STATUS"	CHAR(1)	DEFAULT 'Y'	NOT NULL
 );
 
-CREATE TABLE "MENU" (
-	"MENU_ID"	NUMBER		NOT NULL,
-	"MENU_NAME"	VARCHAR2(90)		NOT NULL,
-	"MENU_PRICE"	NUMBER		NOT NULL,
-	"MENU_CATEGORY"	VARCHAR2(90)		NOT NULL,
-	"STORE_ID"	NUMBER		NOT NULL
+--------------------------------------------------------------------------------
+--------------------------    MUNU 관련     -------------------------------------
+--------------------------------------------------------------------------------
+
+CREATE TABLE MENU (
+    MENU_ID NUMBER PRIMARY KEY,
+    MENU_NAME" VARCHAR2(90) NOT NULL,
+    MENU_PRICE NUMBER NOT NULL,
+    MENU_CATEGORY VARCHAR2(90) NOT NULL,
+    STORE_ID NUMBER NOT NULL,
+    FOREIGN KEY (STORE_ID) REFERENCES STORE(STORE_ID) 
 );
 
-CREATE TABLE "STORE" (
-	"STORE_ID"	NUMBER		NOT NULL,
-	"STORE_NAME"	VARCHAR2(90)		NOT NULL,
-	"STORE_ADDSS"	VARCHAR2(300)		NOT NULL,
-	"STORE_PHONE"	CHAR(11)		NULL,
-	"STORE_TIME"	VARCHAR2(1000)		NULL,
-	"MAP_LAT"	VARCHAR2(10)		NULL,
-	"MAP_LNG"	VARCHAR2(10)		NULL,
-	"BRAND_ID"	VARCHAR(15)		NOT NULL
+COMMENT ON COLUMN MENU.MENU_ID IS '메뉴번호';
+COMMENT ON COLUMN MENU.MENU_NAME IS '메뉴명';
+COMMENT ON COLUMN MENU.MENU_PRICE  IS '메뉴가격';
+COMMENT ON COLUMN MENU.MENU_CATEGORY IS '메뉴종류';
+COMMENT ON COLUMN MENU.STORE_ID IS '매장번호';
+
+CREATE SEQUENCE SEQ_MNO
+NOCACHE;
+
+INSERT INTO MENU 
+VALUES (SEQ_MNO.NEXTVAL, '뿌링클치킨', 20000, '치킨', 1) 
+
+--------------------------------------------------------------------------------
+----------------------------    STORE 관련        -------------------------------
+--------------------------------------------------------------------------------
+
+CREATE TABLE STORE (
+    STORE_ID NUMBER PRIMARY KEY,
+    STORE_NAME VARCHAR2(90) NOT NULL,
+    STORE_ADDSS	VARCHAR2(300) NOT NULL,
+    STORE_PHONE	CHAR(11) NULL,
+    STORE_TIME VARCHAR2(1000) NULL,
+    MAP_LAT VARCHAR2(10) NULL,
+    MAP_LNG VARCHAR2(10) NULL,
+    BRAND_ID VARCHAR(15) NOT NULL,
+    FOREIGN KEY (BRAND_ID) REFERENCES BRAND(BRAND_ID) 
 );
+
+COMMENT ON COLUMN STORE.STORE_ID IS '매장번호';
+COMMENT ON COLUMN STORE.STORE_NAME IS '매장명';
+COMMENT ON COLUMN STORE.STORE_ADDSS IS '주소';
+COMMENT ON COLUMN STORE.STORE_PHONE IS '매장 전화번호';
+COMMENT ON COLUMN STORE.STORE_TIME IS '영업시간';
+COMMENT ON COLUMN STORE.MAP_LAT IS '위도';
+COMMENT ON COLUMN STORE.MAP_LNG IS '경도';
+COMMENT ON COLUMN STORE.BRAND_ID IS '브랜드코드';
+
+CREATE SEQUENCE SEQ_SNO
+NOCACHE;
+
+INSERT INTO STORE
+VALUES (SEQ_SNO.NEXTVAL, 'BHC치킨 당산점', '서울 영등포구 당산로49길 9 골드라인', '02-2677-9290', '매일 12:00 - 24:00', '11111111234', '2333333345', '1')   
+
+
+--------------------------------------------------------------------------------
+--------------------------    BRAND 관련     ------------------------------------
+--------------------------------------------------------------------------------
+
+CREATE TABLE BRAND (
+    BRAND_ID VARCHAR2(15) PRIMARY KEY,
+    BRAND_NAME VARCHAR2(15) NOT NULL
+);
+
+COMMENT ON COLUMN BRAND.BRAND_ID IS '브랜드코드'
+COMMENT ON COLUMN BRAND.BRAND_NAME IS '브랜드이름'
+
+CREATE SEQUENCE SEQ_BNO
+NOCACHE;
+
+INSERT INTO STORE
+VALUES (SEQ_BNO.NEXTVAL, 'BHC') 
+
+-----------------------------------------------------------------------------------------------------------
 
 CREATE TABLE "REPORT" (
 	"REPORT_NO"	NUMBER		NOT NULL,
@@ -117,10 +175,6 @@ CREATE TABLE "QNA" (
 	"MEMBER_NO"	NUMBER		NOT NULL
 );
 
-CREATE TABLE "BRAND" (
-	"BRAND_ID"	VARCHAR2(15)		NOT NULL,
-	"BRAND_NAME"	VARCHAR2(15)		NOT NULL
-);
 CREATE TABLE "REPLY" (
 	"REPLY_ID"	NUMBER		NOT NULL,
 	"REPLY_POST"	VARCHAR2(1000)		NOT NULL,
